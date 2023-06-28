@@ -1,4 +1,4 @@
-package com.toyota.auth.exception;
+package com.example.CurrencyExchange.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

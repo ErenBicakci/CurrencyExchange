@@ -1,9 +1,13 @@
-package com.toyota.auth.exception;
+package com.example.CurrencyExchange.exception;
 
-public class UserNotFoundException extends RuntimeException{
+import java.io.Serial;
+
+public class CurrencyNotFoundException extends RuntimeException{
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    public UserNotFoundException(String message) {
+    public CurrencyNotFoundException(String message) {
         super(message);
     }
 }

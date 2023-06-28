@@ -1,0 +1,68 @@
+version: '20.10.22'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cvqstestdb}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dbtestpassword}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  eurekaserver:
+    build: ./eurekaserver/
+    ports:
+      - 8761:8761
+    environment:
+      PROFILE: dev
+    container_name: eurekaserver
+
+  auth:
+    depends_on:
+      - postgres
+      - eurekaserver
+    build: ./authservice/
+    ports:
+      - 8181:8181
+    environment:
+      PROFILE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cvqstestdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: dbtestpassword
+    container_name: auth
+
+  cvqs:
+    depends_on:
+      - postgres
+      - eurekaserver
+    build: ./Main/
+    ports:
+      - 8080:8080
+    environment:
+      PROFILE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cvqstestdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: dbtestpassword
+    container_name: cvqs
+
+  management:
+    depends_on:
+      - postgres
+      - eurekaserver
+    build: ./management/
+    ports:
+      - 8282:8282
+    environment:
+      PROFILE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cvqstestdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: dbtestpassword
+    container_name: management
+
+
+
+volumes:
+  db-data:
